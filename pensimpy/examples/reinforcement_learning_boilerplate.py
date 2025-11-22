@@ -2,12 +2,12 @@ import time
 import random
 
 import numpy as np
-from pensimpy.data.constants import FS, FOIL, FG, PRES, DISCHARGE, WATER, PAA
-from pensimpy.data.constants import FS_DEFAULT_PROFILE, FOIL_DEFAULT_PROFILE, FG_DEFAULT_PROFILE, \
+from data.constants import FS, FOIL, FG, PRES, DISCHARGE, WATER, PAA
+from data.constants import FS_DEFAULT_PROFILE, FOIL_DEFAULT_PROFILE, FG_DEFAULT_PROFILE, \
     PRESS_DEFAULT_PROFILE, DISCHARGE_DEFAULT_PROFILE, WATER_DEFAULT_PROFILE, PAA_DEFAULT_PROFILE
-from pensimpy.examples.recipe import Recipe, RecipeCombo
-from pensimpy.peni_env_setup import PenSimEnv
-from pensimpy.constants import STEP_IN_MINUTES
+from examples.recipe import Recipe, RecipeCombo
+from peni_env_setup import PenSimEnv
+from constants import STEP_IN_MINUTES
 
 
 class Agent:

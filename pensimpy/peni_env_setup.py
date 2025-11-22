@@ -2,13 +2,12 @@ import numpy as np
 import math
 from scipy.integrate import odeint
 from scipy.interpolate import interp1d
-from pensimpy.data.ctrl_flags import CtrlFlags
-from pensimpy.data.batch_data import X0, Xinterp, U, X
-from pensimpy.constants import RAMAN_SPECTRA, RAMAN_WAVENUMBER, STEP_IN_MINUTES, BATCH_LENGTH_IN_HOURS, STEP_IN_HOURS, \
+from data.ctrl_flags import CtrlFlags
+from data.batch_data import X0, Xinterp, U, X
+from constants import RAMAN_SPECTRA, RAMAN_WAVENUMBER, STEP_IN_MINUTES, BATCH_LENGTH_IN_HOURS, STEP_IN_HOURS, \
     NUM_STEPS, WAVENUMBER_LENGTH, MINUTES_PER_HOUR
-from pensimpy.ode.indpensim_ode_py import indpensim_ode_py
-from pensimpy.utils import pid_controller, smooth, get_dataframe, get_observation_data
-import fastodeint
+from ode.indpensim_ode_py import indpensim_ode_py
+from utils import pid_controller, smooth, get_dataframe, get_observation_data
 
 
 class PenSimEnv:
@@ -16,7 +15,7 @@ class PenSimEnv:
     Class for setting up the simulation environment, simulating the penicillin yield process with Raman spectra, and
     generating the batch data and Raman spectra data in pandas dataframe.
     """
-    def __init__(self, recipe_combo, fast=True):
+    def __init__(self, recipe_combo, fast=False):
         self.xinterp = None
         self.x0 = None
         self.param_list = None
@@ -207,8 +206,9 @@ class PenSimEnv:
         par.extend(u00)
 
         if self.fast:
-            y_sol = fastodeint.integrate(x00, par, t_start, t_end + h_ode, h_ode)
-            t_tmp = t_end + h_ode
+            raise NotImplementedError("fastodeint is not available.")
+            # y_sol = fastodeint.integrate(x00, par, t_start, t_end + h_ode, h_ode)
+            # t_tmp = t_end + h_ode
         else:
             y_sol = odeint(indpensim_ode_py, x00, t_span, tfirst=True, args=(par,))
             y_sol = y_sol[-1]

@@ -6,11 +6,11 @@ import sys
 import random
 import numpy as np
 from gym import spaces, Env
-from pensimpy.peni_env_setup import PenSimEnv
+from peni_env_setup import PenSimEnv
 from hilo.core.recipe import Recipe, FillingMethod
 from hilo.core.recipe_combo import RecipeCombo
-from pensimpy.data.constants import FS, FOIL, FG, PRES, DISCHARGE, WATER, PAA
-from pensimpy.data.constants import FS_DEFAULT_PROFILE, FOIL_DEFAULT_PROFILE, FG_DEFAULT_PROFILE, \
+from data.constants import FS, FOIL, FG, PRES, DISCHARGE, WATER, PAA
+from data.constants import FS_DEFAULT_PROFILE, FOIL_DEFAULT_PROFILE, FG_DEFAULT_PROFILE, \
     PRESS_DEFAULT_PROFILE, DISCHARGE_DEFAULT_PROFILE, WATER_DEFAULT_PROFILE, PAA_DEFAULT_PROFILE
 
 csv.field_size_limit(sys.maxsize)
@@ -28,7 +28,7 @@ def get_observation_data_reformed(observation, t):
     """
     Get observation data at t.
 
-    vars are Temperature,Acid flow rate,Base flow rate,Cooling water,Heating water,Vessel Weight,Dissolved oxygen concentration 
+    vars are Temperature,Acid flow rate,Base flow rate,Cooling water,Heating water,Vessel Weight,Dissolved oxygen concentration
     respectively in csv terms, but used abbreviation here to stay consistent with peni_env_setup
     """
     vars = ['T', 'Fa', 'Fb', 'Fc', 'Fh', 'Wt', 'DO2']
@@ -52,7 +52,7 @@ def get_things_in_loc(in_path, just_files=True):
     """
     in_path can be file path or dir path.
     This function return a list of file paths
-    in in_path if in_path is a dir, or within the 
+    in in_path if in_path is a dir, or within the
     parent path of in_path if it is not a dir.
     just_files=False will let the function go recursively
     into the subdirs.
@@ -132,7 +132,7 @@ class PenSimEnvGym(PenSimEnv, Env):
             observation, _, _ = normalize_spaces(observation, self.max_observations, self.min_observations)
 
         return observation
-    
+
     def step(self, action):
         """
         actions in action (list) are in the order [discharge, Fs, Foil,Fg, pressure, Fw]
@@ -140,7 +140,7 @@ class PenSimEnvGym(PenSimEnv, Env):
         action = np.array(action, dtype=np.float32)
         if self.normalize:
             action, _, _ = denormalize_spaces(action, self.max_actions, self.min_actions)
-        self.k += 1 
+        self.k += 1
         values_dict = self.recipe_combo.get_values_dict_at(self.k * STEP_IN_MINUTES)
         # served as a batch buffer below
         pensimpy_observation, x, yield_per_run, done = super().step(self.k, self.x, action[1], action[2], action[3], action[4], action[0], action[5], values_dict['Fpaa'])
@@ -190,13 +190,13 @@ class PeniControlData:
             tmp_terminals = []
             with codecs.open(file_path, 'r', encoding='utf-8') as fp:
                 csv_reader = csv.reader(fp, delimiter=self.delimiter)
-                next(csv_reader) 
+                next(csv_reader)
                 # get rid of the first line containing only titles
                 for row in csv_reader:
-                    observation = [row[0]] + row[7:-1] 
+                    observation = [row[0]] + row[7:-1]
                     # there are 9 items: Time Step, pH,Temperature,Acid flow rate,Base flow rate,Cooling water,Heating water,Vessel Weight,Dissolved oxygen concentration
                     assert len(observation) == self.state_dim
-                    action = [row[1], row[2], row[3], row[4], row[5], row[6]] 
+                    action = [row[1], row[2], row[3], row[4], row[5], row[6]]
                     # there are 6 items: Discharge rate,Sugar feed rate,Soil bean feed rate,Aeration rate,Back pressure,Water injection/dilution
                     assert len(action) == self.action_dim
                     reward = row[-1]

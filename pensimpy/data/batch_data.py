@@ -1,6 +1,6 @@
 import numpy as np
-from pensimpy.data.channel import Channel
-from pensimpy.constants import NUM_STEPS, WAVENUMBER_LENGTH
+from data.channel import Channel
+from ..constants import NUM_STEPS, WAVENUMBER_LENGTH
 from scipy.signal import lfilter
 
 
