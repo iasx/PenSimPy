@@ -5,23 +5,30 @@ import codecs
 import sys
 import random
 import numpy as np
-from gym import spaces, Env
-from peni_env_setup import PenSimEnv
+from gymnasium import spaces, Env
+
 from hilo.core.recipe import Recipe, FillingMethod
 from hilo.core.recipe_combo import RecipeCombo
-from data.constants import FS, FOIL, FG, PRES, DISCHARGE, WATER, PAA
-from data.constants import FS_DEFAULT_PROFILE, FOIL_DEFAULT_PROFILE, FG_DEFAULT_PROFILE, \
-    PRESS_DEFAULT_PROFILE, DISCHARGE_DEFAULT_PROFILE, WATER_DEFAULT_PROFILE, PAA_DEFAULT_PROFILE
+
+from peni_env_setup import PenSimEnv
+from data.profiles import FS, FOIL, FG, PRES, DISCHARGE, WATER, PAA
+from data.profiles import (
+    FS_DEFAULT_PROFILE,
+    FOIL_DEFAULT_PROFILE,
+    FG_DEFAULT_PROFILE,
+    PRESS_DEFAULT_PROFILE,
+    DISCHARGE_DEFAULT_PROFILE,
+    WATER_DEFAULT_PROFILE,
+    PAA_DEFAULT_PROFILE,
+)
+from constants import (
+    MINUTES_PER_HOUR,
+    STEP_IN_MINUTES,
+    NUM_STEPS,
+)
 
 csv.field_size_limit(sys.maxsize)
 random.seed(0)
-MINUTES_PER_HOUR = 60
-BATCH_LENGTH_IN_MINUTES = 230 * MINUTES_PER_HOUR
-BATCH_LENGTH_IN_HOURS = 230
-STEP_IN_MINUTES = 12
-STEP_IN_HOURS = STEP_IN_MINUTES / MINUTES_PER_HOUR
-NUM_STEPS = int(BATCH_LENGTH_IN_MINUTES / STEP_IN_MINUTES)
-WAVENUMBER_LENGTH = 2200
 
 
 def get_observation_data_reformed(observation, t):

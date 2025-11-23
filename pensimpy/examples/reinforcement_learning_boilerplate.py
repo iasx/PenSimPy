@@ -1,13 +1,21 @@
 import time
 import random
-
 import numpy as np
-from data.constants import FS, FOIL, FG, PRES, DISCHARGE, WATER, PAA
-from data.constants import FS_DEFAULT_PROFILE, FOIL_DEFAULT_PROFILE, FG_DEFAULT_PROFILE, \
-    PRESS_DEFAULT_PROFILE, DISCHARGE_DEFAULT_PROFILE, WATER_DEFAULT_PROFILE, PAA_DEFAULT_PROFILE
-from examples.recipe import Recipe, RecipeCombo
+from tqdm import tqdm
+
 from peni_env_setup import PenSimEnv
-from constants import STEP_IN_MINUTES
+from examples.recipe import Recipe, RecipeCombo
+from constants import STEP_IN_MINUTES, NUM_STEPS
+from data.profiles import FS, FOIL, FG, PRES, DISCHARGE, WATER, PAA
+from data.profiles import (
+    FS_DEFAULT_PROFILE,
+    FOIL_DEFAULT_PROFILE,
+    FG_DEFAULT_PROFILE,
+    PRESS_DEFAULT_PROFILE,
+    DISCHARGE_DEFAULT_PROFILE,
+    WATER_DEFAULT_PROFILE,
+    PAA_DEFAULT_PROFILE,
+)
 
 
 class Agent:
@@ -19,7 +27,11 @@ class Agent:
         self.act_dim = act_dim
 
     def sample_actions(self):
-        return np.clip([random.uniform(-1.5, 1.5) for _ in range(self.act_dim)], -0.01, 0.01)
+        return np.clip(
+            [random.uniform(-1.5, 1.5) for _ in range(self.act_dim)],
+            -0.01,
+            0.01
+        )
 
 
 def run(episodes=1000):
@@ -45,13 +57,11 @@ def run(episodes=1000):
         recipe_combo = RecipeCombo(recipe_dict=recipe_dict)
 
         env = PenSimEnv(recipe_combo=recipe_combo)
-        done = False
+
         observation, batch_data = env.reset()
-        k_timestep, batch_yield, yield_pre = 0, 0, 0
+        batch_yield, done = 0, False
 
-        while not done:
-            k_timestep += 1
-
+        for k_timestep in tqdm(range(1, NUM_STEPS + 1), desc=f"Episode {e+1}/{episodes}"):
             actions = agent.sample_actions()
 
             """add adjustment to each action"""
@@ -76,7 +86,8 @@ def run(episodes=1000):
                                                              batch_data,
                                                              Fs, Foil, Fg, pressure, discharge, Fw, Fpaa)
             batch_yield += reward
-        print(f"episode: {e}, elapsed time: {int(time.time() - t)} s, batch_yield: {batch_yield}")
+
+        print(f"\nEpisode: {e + 1}\nElapsed: {int(time.time() - t)}s\nYield: {batch_yield}\n")
         batch_yield_list.append(batch_yield)
     return batch_yield_list
 

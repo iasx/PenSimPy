@@ -8,6 +8,7 @@ class Setpoint:
     """
     Encapsulate a value at a point of time
     """
+
     def __init__(self, time: float, value: float):
         self.time = time
         self.value = value
@@ -23,9 +24,11 @@ class Recipe:
     """
     A store for a series of setpoints [{"time": , "value": v}...]
     """
-    def __init__(self, sp_list: List[Dict[str, float]],
-                 name: str):
-        assert len(sp_list) > 0, "Can't initiate a recipe instance with an empty setpoint list"
+
+    def __init__(self, sp_list: List[Dict[str, float]], name: str):
+        assert len(sp_list) > 0, (
+            "Can't initiate a recipe instance with an empty setpoint list"
+        )
         assert isinstance(name, str), "Can't initiate a recipe instance without a name"
         self.name = name
         self._sp_list = []
@@ -48,7 +51,9 @@ class Recipe:
 
     def add_setpoint(self, sp: Dict[str, float]):
         sp = Setpoint(**sp)
-        assert sp.time not in self.index_lookup.keys(), f"time = {sp.time} already exists"
+        assert sp.time not in self.index_lookup.keys(), (
+            f"time = {sp.time} already exists"
+        )
         self.sp_list = self.sp_list + [sp]
 
     def add_setpoints(self, sp_list: List[Dict[str, float]]):
@@ -83,7 +88,9 @@ class Recipe:
         if self.sp_list[start].time == time:
             return self.sp_list[start], self.sp_list[start]
         else:
-            return self.sp_list[start], self.sp_list[min(start + 1, len(self.sp_list) - 1)]
+            return self.sp_list[start], self.sp_list[
+                min(start + 1, len(self.sp_list) - 1)
+            ]
 
     def get_value_at(self, time: float) -> float:
         left_sp, right_sp = self.find_setpoints_interval(time)
@@ -96,8 +103,11 @@ class RecipeCombo:
     """
     A collection of recipes
     """
+
     def __init__(self, recipe_dict: Dict[str, Recipe]):
-        assert len(recipe_dict) > 0, "Can't initiate a recipe combo instance with an empty recipe dict"
+        assert len(recipe_dict) > 0, (
+            "Can't initiate a recipe combo instance with an empty recipe dict"
+        )
         self.recipe_dict = recipe_dict
 
     def get_values_dict_at(self, time: float) -> Dict:

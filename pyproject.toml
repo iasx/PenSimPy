@@ -5,9 +5,11 @@ description = "Fork of PenSimPy"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "tqdm>=4.67.1",
     "numpy>=2.3.5",
     "pandas>=2.3.3",
     "scipy>=1.16.3",
+    "gymnasium>=1.2.2",
 ]
 
 [dependency-groups]

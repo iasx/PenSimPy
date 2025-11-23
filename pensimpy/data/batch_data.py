@@ -1,7 +1,8 @@
 import numpy as np
-from data.channel import Channel
-from ..constants import NUM_STEPS, WAVENUMBER_LENGTH
 from scipy.signal import lfilter
+
+from data.channel import Channel
+from constants import NUM_STEPS, WAVENUMBER_LENGTH
 
 
 class X:
