@@ -110,7 +110,7 @@ class X0:
         random_seed_ref += 1
         random_state = np.random.RandomState(random_seed_ref)
         self.X = initial_conds + 0.1 * random_state.randn(1)[0]
-        self.P = 0
+        self.P = 0.0
 
         random_seed_ref += 1
         random_state = np.random.RandomState(random_seed_ref)
@@ -141,17 +141,17 @@ class X0:
         random_seed_ref += 1
         self.a0 = initial_conds * 0.3333333333333333
         self.a1 = initial_conds * 0.6666666666666666
-        self.a3 = 0
-        self.a4 = 0
+        self.a3 = 0.0
+        self.a4 = 0.0
         self.Culture_age = 0
 
         random_seed_ref += 1
         random_state = np.random.RandomState(random_seed_ref)
-        self.PAA = 1400 + 50 * random_state.randn(1)[0]
+        self.PAA = float(1400 + 50 * random_state.randn(1)[0])
 
         random_seed_ref += 1
         random_state = np.random.RandomState(random_seed_ref)
-        self.NH3 = 1700 + 50 * random_state.randn(1)[0]
+        self.NH3 = float(1700 + 50 * random_state.randn(1)[0])
 
 
 class U:
@@ -160,21 +160,21 @@ class U:
     """
 
     def __init__(self):
-        self.Fault_ref = 0
-        self.Fs = 0
-        self.Foil = 0
-        self.Fg = 0
-        self.pressure = 0
-        self.Fa = 0
-        self.Fb = 0
-        self.Fc = 0
-        self.Fh = 0
-        self.Fw = 0
-        self.discharge = 0
-        self.Fpaa = 0
-        self.RPM = 0
-        self.viscosity = 0
-        self.NH3_shots = 0
+        self.Fault_ref = 0.0
+        self.Fs = 0.0
+        self.Foil = 0.0
+        self.Fg = 0.0
+        self.pressure = 0.0
+        self.Fa = 0.0
+        self.Fb = 0.0
+        self.Fc = 0.0
+        self.Fh = 0.0
+        self.Fw = 0.0
+        self.discharge = 0.0
+        self.Fpaa = 0.0
+        self.RPM = 0.0
+        self.viscosity = 0.0
+        self.NH3_shots = 0.0
 
 
 class Xinterp:

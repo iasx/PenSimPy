@@ -24,6 +24,7 @@ class PenSimEnv:
     Class for setting up the simulation environment, simulating the penicillin yield process with Raman spectra, and
     generating the batch data and Raman spectra data in pandas dataframe.
     """
+
     def __init__(self, recipe_combo, fast=False):
         self.xinterp = None
         self.x0 = None
@@ -62,7 +63,10 @@ class PenSimEnv:
         N_conc_paa = 150000 + 2000 * random_state.randn(1)[0]
 
         # create xinterp
-        self.xinterp = Xinterp(self.random_seed_ref, np.arange(0, BATCH_LENGTH_IN_HOURS + STEP_IN_HOURS, STEP_IN_HOURS))
+        self.xinterp = Xinterp(
+            self.random_seed_ref,
+            np.arange(0, BATCH_LENGTH_IN_HOURS + STEP_IN_HOURS, STEP_IN_HOURS),
+        )
 
         # param list
         # self.param_list = parameter_list(self.x0.mup, self.x0.mux, alpha_kla, N_conc_paa, PAA_c)
@@ -97,67 +101,84 @@ class PenSimEnv:
             x.T.y[0] = self.x0.T
 
         # apply PID and interpolations
-        u, x = self.integrate_control_strategy(x, k, Fs, Foil, Fg, pressure, discharge, Fw, Fpaa)
+        u, x = self.integrate_control_strategy(
+            x, k, Fs, Foil, Fg, pressure, discharge, Fw, Fpaa
+        )
 
         # builds initial conditions and control vectors specific to
         # indpensim_ode using ode45
         if k == 1:
-            x00 = [self.x0.S,
-                   self.x0.DO2,
-                   self.x0.O2,
-                   self.x0.P,
-                   self.x0.V,
-                   self.x0.Wt,
-                   self.x0.pH,
-                   self.x0.T,
-                   0,
-                   4,
-                   self.x0.Culture_age,
-                   self.x0.a0,
-                   self.x0.a1,
-                   self.x0.a3,
-                   self.x0.a4,
-                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                   self.x0.CO2outgas,
-                   0,
-                   self.x0.PAA,
-                   self.x0.NH3,
-                   0,
-                   0]
+            x00: list[float] = [
+                self.x0.S,
+                self.x0.DO2,
+                self.x0.O2,
+                self.x0.P,
+                self.x0.V,
+                self.x0.Wt,
+                self.x0.pH,
+                self.x0.T,
+                0.0,
+                4.0,
+                self.x0.Culture_age,
+                self.x0.a0,
+                self.x0.a1,
+                self.x0.a3,
+                self.x0.a4,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                self.x0.CO2outgas,
+                0.0,
+                self.x0.PAA,
+                self.x0.NH3,
+                0.0,
+                0.0,
+            ]
         else:
-            x00 = [x.S.y[k - 2],
-                   x.DO2.y[k - 2],
-                   x.O2.y[k - 2],
-                   x.P.y[k - 2],
-                   x.V.y[k - 2],
-                   x.Wt.y[k - 2],
-                   x.pH.y[k - 2],
-                   x.T.y[k - 2],
-                   x.Q.y[k - 2],
-                   x.Viscosity.y[k - 2],
-                   x.Culture_age.y[k - 2],
-                   x.a0.y[k - 2],
-                   x.a1.y[k - 2],
-                   x.a3.y[k - 2],
-                   x.a4.y[k - 2],
-                   x.n0.y[k - 2],
-                   x.n1.y[k - 2],
-                   x.n2.y[k - 2],
-                   x.n3.y[k - 2],
-                   x.n4.y[k - 2],
-                   x.n5.y[k - 2],
-                   x.n6.y[k - 2],
-                   x.n7.y[k - 2],
-                   x.n8.y[k - 2],
-                   x.n9.y[k - 2],
-                   x.nm.y[k - 2],
-                   x.phi0.y[k - 2],
-                   x.CO2outgas.y[k - 2],
-                   x.CO2_d.y[k - 2],
-                   x.PAA.y[k - 2],
-                   x.NH3.y[k - 2],
-                   0,
-                   0]
+            x00: list[float] = [
+                x.S.y[k - 2],
+                x.DO2.y[k - 2],
+                x.O2.y[k - 2],
+                x.P.y[k - 2],
+                x.V.y[k - 2],
+                x.Wt.y[k - 2],
+                x.pH.y[k - 2],
+                x.T.y[k - 2],
+                x.Q.y[k - 2],
+                x.Viscosity.y[k - 2],
+                x.Culture_age.y[k - 2],
+                x.a0.y[k - 2],
+                x.a1.y[k - 2],
+                x.a3.y[k - 2],
+                x.a4.y[k - 2],
+                x.n0.y[k - 2],
+                x.n1.y[k - 2],
+                x.n2.y[k - 2],
+                x.n3.y[k - 2],
+                x.n4.y[k - 2],
+                x.n5.y[k - 2],
+                x.n6.y[k - 2],
+                x.n7.y[k - 2],
+                x.n8.y[k - 2],
+                x.n9.y[k - 2],
+                x.nm.y[k - 2],
+                x.phi0.y[k - 2],
+                x.CO2outgas.y[k - 2],
+                x.CO2_d.y[k - 2],
+                x.PAA.y[k - 2],
+                x.NH3.y[k - 2],
+                0.0,
+                0.0,
+            ]
 
         # Process disturbances
         distMuP = self.xinterp.distMuP.y[k - 1]
@@ -169,39 +190,41 @@ class PenSimEnv:
         distTcin = self.xinterp.distTcin.y[k - 1]
         distO_2in = self.xinterp.distO_2in.y[k - 1]
 
-        u00 = [self.ctrl_flags.Inhib,
-               u.Fs,
-               u.Fg,
-               u.RPM,
-               u.Fc,
-               u.Fh,
-               u.Fb,
-               u.Fa,
-               h_ode,
-               u.Fw,
-               u.pressure,
-               u.viscosity,
-               u.discharge,
-               u.Fpaa,
-               u.Foil,
-               u.NH3_shots,
-               self.ctrl_flags.Dis,
-               distMuP,
-               distMuX,
-               distcs,
-               distcoil,
-               distabc,
-               distPAA,
-               distTcin,
-               distO_2in,
-               self.ctrl_flags.Vis]
+        u00: list[float] = [
+            self.ctrl_flags.Inhib,
+            u.Fs,
+            u.Fg,
+            u.RPM,
+            u.Fc,
+            u.Fh,
+            u.Fb,
+            u.Fa,
+            h_ode,
+            u.Fw,
+            u.pressure,
+            u.viscosity,
+            u.discharge,
+            u.Fpaa,
+            u.Foil,
+            u.NH3_shots,
+            self.ctrl_flags.Dis,
+            distMuP,
+            distMuX,
+            distcs,
+            distcoil,
+            distabc,
+            distPAA,
+            distTcin,
+            distO_2in,
+            self.ctrl_flags.Vis,
+        ]
 
         # To account for inability of growth rates of biomass and penicillin to
         # return to normal after continuous periods of suboptimal pH and temperature conditions
         # If the Temperature or pH results is off set-point for k> 100 mu_p(max) is reduced to current value
         if self.ctrl_flags.Inhib == 1 or self.ctrl_flags.Inhib == 2:
             if k > 65:
-                a1 = np.diff(x.mu_X_calc.y[k - 66:k - 1])
+                a1 = np.diff(x.mu_X_calc.y[k - 66 : k - 1])
                 a2 = [1 if x < 0 else 0 for x in a1]
                 if sum(a2) >= 63:
                     self.param_list[1] = x.mu_X_calc.y[k - 2] * 5
@@ -216,10 +239,19 @@ class PenSimEnv:
 
         if self.fast:
             raise NotImplementedError("fastodeint is not available.")
-            # y_sol = fastodeint.integrate(x00, par, t_start, t_end + h_ode, h_ode)
+            # y_sol = diffeqsolve(
+            #     self.ode_term,
+            #     self.ode_solver,
+            #     t0=t_start,
+            #     t1=t_end + h_ode,
+            #     dt0=h_ode,
+            #     y0=x00,
+            # ).ys
+            # # y_sol = fastodeint.integrate(x00, par, t_start, t_end + h_ode, h_ode)
             # t_tmp = t_end + h_ode
         else:
             y_sol = odeint(indpensim_ode_py, x00, t_span, tfirst=True, args=(par,))
+            # y_sol = get_solution(x00, t_span, par)
             y_sol = y_sol[-1]
             t_tmp = t_span[-1]
 
@@ -338,13 +370,18 @@ class PenSimEnv:
         O2_in = 0.204
 
         # Calculating the OUR/ CER
-        x.OUR.y[k - 1] = (1.4285714285714286 * x.Fg.y[k - 1]) * \
-                         (O2_in - x.O2.y[k - 1] * (0.7902 / (1 - x.O2.y[k - 1] - x.CO2outgas.y[k - 1] / 100)))
+        x.OUR.y[k - 1] = (1.4285714285714286 * x.Fg.y[k - 1]) * (
+            O2_in
+            - x.O2.y[k - 1]
+            * (0.7902 / (1 - x.O2.y[k - 1] - x.CO2outgas.y[k - 1] / 100))
+        )
         x.OUR.t[k - 1] = t_tmp
 
         # Calculating the CER
         x.CER.y[k - 1] = (1.9642857142857144 * x.Fg.y[k - 1]) * (
-                (0.0065 * x.CO2outgas.y[k - 1]) * (0.7902 / (1 - O2_in - x.CO2outgas.y[k - 1] / 100) - 0.0330))
+            (0.0065 * x.CO2outgas.y[k - 1])
+            * (0.7902 / (1 - O2_in - x.CO2outgas.y[k - 1] / 100) - 0.0330)
+        )
         x.CER.t[k - 1] = t_tmp
 
         # Adding in Raman Spectra
@@ -355,7 +392,11 @@ class PenSimEnv:
                 x = self.raman_sim(k, x)
 
         # Off-line measurements recorded
-        if np.remainder(t_tmp, self.ctrl_flags.Off_line_m) == 0 or t_tmp == 1 or t_tmp == BATCH_LENGTH_IN_HOURS:
+        if (
+            np.remainder(t_tmp, self.ctrl_flags.Off_line_m) == 0
+            or t_tmp == 1
+            or t_tmp == BATCH_LENGTH_IN_HOURS
+        ):
             delay = self.ctrl_flags.Off_line_delay
             x.NH3_offline.y[k - 1] = x.NH3.y[k - delay - 1]
             x.NH3_offline.t[k - 1] = x.NH3.t[k - delay - 1]
@@ -368,16 +409,16 @@ class PenSimEnv:
             x.X_offline.y[k - 1] = x.X.y[k - delay - 1]
             x.X_offline.t[k - 1] = x.X.t[k - delay - 1]
         else:
-            x.NH3_offline.y[k - 1] = float('nan')
-            x.NH3_offline.t[k - 1] = float('nan')
-            x.Viscosity_offline.y[k - 1] = float('nan')
-            x.Viscosity_offline.t[k - 1] = float('nan')
-            x.PAA_offline.y[k - 1] = float('nan')
-            x.PAA_offline.t[k - 1] = float('nan')
-            x.P_offline.y[k - 1] = float('nan')
-            x.P_offline.t[k - 1] = float('nan')
-            x.X_offline.y[k - 1] = float('nan')
-            x.X_offline.t[k - 1] = float('nan')
+            x.NH3_offline.y[k - 1] = float("nan")
+            x.NH3_offline.t[k - 1] = float("nan")
+            x.Viscosity_offline.y[k - 1] = float("nan")
+            x.Viscosity_offline.t[k - 1] = float("nan")
+            x.PAA_offline.y[k - 1] = float("nan")
+            x.PAA_offline.t[k - 1] = float("nan")
+            x.P_offline.y[k - 1] = float("nan")
+            x.P_offline.t[k - 1] = float("nan")
+            x.X_offline.y[k - 1] = float("nan")
+            x.X_offline.t[k - 1] = float("nan")
 
         x.V.y[k - 1] = np.nan_to_num(x.V.y[k - 1])
         x.P.y[k - 1] = np.nan_to_num(x.P.y[k - 1])
@@ -385,7 +426,11 @@ class PenSimEnv:
         # peni_yield is accumulated penicillin
         # yield_pre is previous yield
         # x.discharge.y[k - 1] * x.P.y[k - 1] * h / 1000  is the discharged
-        yield_per_run = peni_yield - self.yield_pre - x.discharge.y[k - 1] * x.P.y[k - 1] * STEP_IN_HOURS / 1000
+        yield_per_run = (
+            peni_yield
+            - self.yield_pre
+            - x.discharge.y[k - 1] * x.P.y[k - 1] * STEP_IN_HOURS / 1000
+        )
         self.yield_pre = peni_yield
 
         observation = get_observation_data(x, k - 1)
@@ -400,7 +445,9 @@ class PenSimEnv:
 
         return observation, x, yield_per_run, done
 
-    def integrate_control_strategy(self, x, k, Fs_k, Foil_k, Fg_k, pressure_k, discharge_k, Fw_k, Fpaa_k):
+    def integrate_control_strategy(
+        self, x, k, Fs_k, Foil_k, Fg_k, pressure_k, discharge_k, Fw_k, Fpaa_k
+    ):
         """
         Control strategies: Sequential batch control and PID control.
         """
@@ -409,16 +456,23 @@ class PenSimEnv:
         pH_sensor_error = 0
         if self.ctrl_flags.Faults == 8:
             pH_sensor_error = 0.1
-            ramp_function = [[0, 0],
-                             [200, 0],
-                             [800, pH_sensor_error],
-                             [1750, pH_sensor_error]]
+            ramp_function = [
+                [0.0, 0.0],
+                [200.0, 0.0],
+                [800.0, pH_sensor_error],
+                [1750.0, pH_sensor_error],
+            ]
             ramp_function = np.array(ramp_function)
             t_interp = np.arange(1, 1751)
-            f = interp1d(ramp_function[:, 0], ramp_function[:, 1], kind='linear', fill_value='extrapolate')
+            f = interp1d(
+                ramp_function[:, 0],
+                ramp_function[:, 1],
+                kind="linear",
+                fill_value="extrapolate",
+            )
             ramp_function_interp = f(t_interp)
             pH_sensor_error = ramp_function_interp[k - 1]
-            u.Fault_ref = 1
+            u.Fault_ref = 1.0
 
         # builds the error history. Samples 1 and 2 are calculated separately
         # because there is only instance of the error available
@@ -428,7 +482,7 @@ class PenSimEnv:
             ph_err1 = pH_sp - (-math.log(x.pH.y[0]) / math.log(10)) + pH_sensor_error
         else:
             ph_err = pH_sp - (-math.log(x.pH.y[k - 2]) / math.log(10)) + pH_sensor_error
-            ph_err1 = - (-math.log(x.pH.y[k - 3]) / math.log(10)) + pH_sensor_error
+            ph_err1 = -(-math.log(x.pH.y[k - 3]) / math.log(10)) + pH_sensor_error
 
         # builds the pH history of the current and previous two samples
         if k == 1 or k == 2:
@@ -448,34 +502,93 @@ class PenSimEnv:
         if ph_err >= -0.05:
             ph_on_off = 1
             if k == 1:
-                Fb = pid_controller(x.Fb.y[0], ph_err, ph_err1, ph, ph1, ph2, 0, 225, 8e-2, 4.0000e-05, 8, STEP_IN_HOURS)
+                Fb = pid_controller(
+                    x.Fb.y[0],
+                    ph_err,
+                    ph_err1,
+                    ph,
+                    ph1,
+                    ph2,
+                    0.0,
+                    225.0,
+                    8e-2,
+                    4.0000e-05,
+                    8.0,
+                    STEP_IN_HOURS,
+                )
             else:
-                Fb = pid_controller(x.Fb.y[k - 2], ph_err, ph_err1, ph, ph1, ph2, 0, 225, 8e-2, 4.0000e-05, 8, STEP_IN_HOURS)
-            Fa = 0
+                Fb = pid_controller(
+                    x.Fb.y[k - 2],
+                    ph_err,
+                    ph_err1,
+                    ph,
+                    ph1,
+                    ph2,
+                    0.0,
+                    225.0,
+                    8e-2,
+                    4.0000e-05,
+                    8.0,
+                    STEP_IN_HOURS,
+                )
+            Fa = 0.0
         elif ph_err <= -0.05:
             ph_on_off = 1
             if k == 1:
-                Fa = pid_controller(x.Fa.y[0], ph_err, ph_err1, ph, ph1, ph2, 0, 225, 8e-2, 12.5, 0.125, STEP_IN_HOURS)
-                Fb = 0
+                Fa = pid_controller(
+                    x.Fa.y[0],
+                    ph_err,
+                    ph_err1,
+                    ph,
+                    ph1,
+                    ph2,
+                    0.0,
+                    225.0,
+                    8e-2,
+                    12.5,
+                    0.125,
+                    STEP_IN_HOURS,
+                )
+                Fb = 0.0
             else:
-                Fa = pid_controller(x.Fa.y[k - 2], ph_err, ph_err1, ph, ph1, ph2, 0, 225, 8e-2, 12.5, 0.125, STEP_IN_HOURS)
+                Fa = pid_controller(
+                    x.Fa.y[k - 2],
+                    ph_err,
+                    ph_err1,
+                    ph,
+                    ph1,
+                    ph2,
+                    0,
+                    225,
+                    8e-2,
+                    12.5,
+                    0.125,
+                    STEP_IN_HOURS,
+                )
                 Fb = x.Fb.y[k - 2] * 0.5
         else:
-            ph_on_off = 0
-            Fb = 0
-            Fa = 0
+            ph_on_off = 0.0
+            Fb = 0.0
+            Fa = 0.0
 
         # Temperature controller
-        T_sensor_error = 0
+        T_sensor_error = 0.0
         if self.ctrl_flags.Faults == 7:
             T_sensor_error = 0.4
-            ramp_function = [[0, 0],
-                             [200, 0],
-                             [800, T_sensor_error],
-                             [1750, T_sensor_error]]
+            ramp_function = [
+                [0.0, 0.0],
+                [200.0, 0.0],
+                [800.0, T_sensor_error],
+                [1750.0, T_sensor_error],
+            ]
             ramp_function = np.array(ramp_function)
             t_interp = np.arange(1, 1751)
-            f = interp1d(ramp_function[:, 0], ramp_function[:, 1], kind='linear', fill_value='extrapolate')
+            f = interp1d(
+                ramp_function[:, 0],
+                ramp_function[:, 1],
+                kind="linear",
+                fill_value="extrapolate",
+            )
             ramp_function_interp = f(t_interp)
             T_sensor_error = ramp_function_interp[k - 1]
             u.Fault_ref = 1
@@ -509,18 +622,70 @@ class PenSimEnv:
         if temp_err <= 0.05:
             temp_on_off = 0
             if k == 1:
-                Fc = pid_controller(x.Fc.y[0], temp_err, temp_err1, temp, temp1, temp2, 0, 1.5e3, -300, 1.6, 0.005, STEP_IN_HOURS)
-                Fh = 0
+                Fc = pid_controller(
+                    x.Fc.y[0],
+                    temp_err,
+                    temp_err1,
+                    temp,
+                    temp1,
+                    temp2,
+                    0.0,
+                    1.5e3,
+                    -300.0,
+                    1.6,
+                    0.005,
+                    STEP_IN_HOURS,
+                )
+                Fh = 0.0
             else:
-                Fc = pid_controller(x.Fc.y[k - 2], temp_err, temp_err1, temp, temp1, temp2, 0, 1.5e3, -300, 1.6, 0.005, STEP_IN_HOURS)
+                Fc = pid_controller(
+                    x.Fc.y[k - 2],
+                    temp_err,
+                    temp_err1,
+                    temp,
+                    temp1,
+                    temp2,
+                    0.0,
+                    1.5e3,
+                    -300.0,
+                    1.6,
+                    0.005,
+                    STEP_IN_HOURS,
+                )
                 Fh = x.Fh.y[k - 2] * 0.1
         else:
             temp_on_off = 1
             if k == 1:
-                Fh = pid_controller(x.Fc.y[0], temp_err, temp_err1, temp, temp1, temp2, 0, 1.5e3, 50, 0.050, 1, STEP_IN_HOURS)
-                Fc = 0
+                Fh = pid_controller(
+                    x.Fc.y[0],
+                    temp_err,
+                    temp_err1,
+                    temp,
+                    temp1,
+                    temp2,
+                    0.0,
+                    1.5e3,
+                    50.0,
+                    0.050,
+                    1.0,
+                    STEP_IN_HOURS,
+                )
+                Fc = 0.0
             else:
-                Fh = pid_controller(x.Fc.y[k - 2], temp_err, temp_err1, temp, temp1, temp2, 0, 1.5e3, 50, 0.050, 1, STEP_IN_HOURS)
+                Fh = pid_controller(
+                    x.Fc.y[k - 2],
+                    temp_err,
+                    temp_err1,
+                    temp,
+                    temp1,
+                    temp2,
+                    0.0,
+                    1.5e3,
+                    50.0,
+                    0.050,
+                    1.0,
+                    STEP_IN_HOURS,
+                )
                 Fc = x.Fc.y[k - 2] * 0.3
         Fc = 1e-4 if Fc < 1e-4 else Fc
         Fh = 1e-4 if Fh < 1e-4 else Fh
@@ -551,9 +716,9 @@ class PenSimEnv:
             if self.ctrl_flags.PRBS == 1:
                 if k > 500 and np.remainder(k, 100) == 0:
                     random_number = np.random.randint(1, 4)
-                    noise_factor = 15
+                    noise_factor = 15.0
                     if random_number == 1:
-                        random_noise = 0
+                        random_noise = 0.0
                     elif random_number == 2:
                         random_noise = noise_factor
                     else:
@@ -569,9 +734,9 @@ class PenSimEnv:
             if self.ctrl_flags.PRBS == 1:
                 if k > 500 and np.remainder(k, 100) == 0:
                     random_number = np.random.randint(1, 4)
-                    noise_factor = 1
+                    noise_factor = 1.0
                     if random_number == 1:
-                        random_noise = 0
+                        random_noise = 0.0
                     elif random_number == 2:
                         random_noise = noise_factor
                     else:
@@ -596,56 +761,56 @@ class PenSimEnv:
         # Aeration fault
         if self.ctrl_flags.Faults == 1 or self.ctrl_flags.Faults == 6:
             if 100 <= k <= 120:
-                Fg = 20
+                Fg = 20.0
                 u.Fault_ref = 1
             if 500 <= k <= 550:
-                Fg = 20
+                Fg = 20.0
                 u.Fault_ref = 1
 
         # Pressure fault
         if self.ctrl_flags.Faults == 2 or self.ctrl_flags.Faults == 6:
             if 500 <= k <= 520:
-                pressure = 2
-                u.Fault_ref = 1
+                pressure = 2.0
+                u.Fault_ref = 1.0
             if 1000 <= k <= 1200:
-                pressure = 2
-                u.Fault_ref = 1
+                pressure = 2.0
+                u.Fault_ref = 1.0
 
         # Substrate feed fault
         if self.ctrl_flags.Faults == 3 or self.ctrl_flags.Faults == 6:
             if 100 <= k <= 150:
-                Fs = 2
-                u.Fault_ref = 1
+                Fs = 2.0
+                u.Fault_ref = 1.0
             if 380 <= k <= 460:
-                Fs = 20
-                u.Fault_ref = 1
+                Fs = 20.0
+                u.Fault_ref = 1.0
             if 1000 <= k <= 1070:
-                Fs = 20
-                u.Fault_ref = 1
+                Fs = 20.0
+                u.Fault_ref = 1.0
 
         # Base flow-rate  fault
         if self.ctrl_flags.Faults == 4 or self.ctrl_flags.Faults == 6:
             if 400 <= k <= 420:
-                Fb = 5
-                u.Fault_ref = 1
+                Fb = 5.0
+                u.Fault_ref = 1.0
             if 700 <= k <= 800:
-                Fb = 10
-                u.Fault_ref = 1
+                Fb = 10.0
+                u.Fault_ref = 1.0
 
         # Coolant water flow-rate fault
         if self.ctrl_flags.Faults == 5 or self.ctrl_flags.Faults == 6:
             if 350 <= k <= 450:
-                Fc = 2
-                u.Fault_ref = 1
+                Fc = 2.0
+                u.Fault_ref = 1.0
             if 1200 <= k <= 1350:
-                Fc = 10
-                u.Fault_ref = 1
+                Fc = 10.0
+                u.Fault_ref = 1.0
 
         # Bulidng PID controller for PAA
         # builds the error history.  Samples 1 and 2 are calculated separately
         # because there is only instance of the error available
         if self.ctrl_flags.Raman_spec == 2:
-            PAA_sp = 1200
+            PAA_sp = 1200.0
             if k == 1 or k == 2:
                 PAA_err = PAA_sp - x.PAA.y[0]
                 PAA_err1 = PAA_sp - x.PAA.y[0]
@@ -669,13 +834,39 @@ class PenSimEnv:
                     temp2 = x.PAA_pred.y[k - 5]
 
                 if k == 1:
-                    Fpaa = pid_controller(x.Fpaa.y[0], PAA_err, PAA_err1, temp, temp1, temp2, 0, 150, 0.1, 0.50, 0, STEP_IN_HOURS)
+                    Fpaa = pid_controller(
+                        x.Fpaa.y[0],
+                        PAA_err,
+                        PAA_err1,
+                        temp,
+                        temp1,
+                        temp2,
+                        0.0,
+                        150.0,
+                        0.1,
+                        0.50,
+                        0.0,
+                        STEP_IN_HOURS,
+                    )
                 else:
-                    Fpaa = pid_controller(x.Fpaa.y[k - 2], PAA_err, PAA_err1, temp, temp1, temp2, 0, 150, 0.1, 0.50, 0, STEP_IN_HOURS)
+                    Fpaa = pid_controller(
+                        x.Fpaa.y[k - 2],
+                        PAA_err,
+                        PAA_err1,
+                        temp,
+                        temp1,
+                        temp2,
+                        0.0,
+                        150.0,
+                        0.1,
+                        0.50,
+                        0.0,
+                        STEP_IN_HOURS,
+                    )
 
         # Controller vector
         u.Fg = Fg
-        u.RPM = 100
+        u.RPM = 100.0
         u.Fs = Fs
         u.Fa = Fa
         u.Fb = Fb
@@ -707,14 +898,19 @@ class PenSimEnv:
         Biomass_S = x.X.y[k - 1] / 40
         Viscosity_S = x.Viscosity.y[k - 1] / 100
         Time_S = k / NUM_STEPS
-        Intensity_increase1 = a * Biomass_S + b * Product_S + c * Viscosity_S + d * Time_S
-        scaling_factor = 370000
+        Intensity_increase1 = (
+            a * Biomass_S + b * Product_S + c * Viscosity_S + d * Time_S
+        )
+        scaling_factor = 370000.0
         Gluc_increase = 1714.2857142857142
-        PAA_increase = 1700
-        Prod_increase = 100000
+        PAA_increase = 1700.0
+        Prod_increase = 100000.0
 
         # Loading in the reference Raman Spectral file
-        New_Spectra = Intensity_increase1 * scaling_factor * Intensity_shift1 + np.array([RAMAN_SPECTRA]).T
+        New_Spectra = (
+            Intensity_increase1 * scaling_factor * Intensity_shift1
+            + np.array([RAMAN_SPECTRA]).T
+        )
         x.Raman_Spec.Intensity[k - 1, :] = np.squeeze(New_Spectra).tolist()
 
         random_noise = [50] * WAVENUMBER_LENGTH
@@ -739,22 +935,40 @@ class PenSimEnv:
 
         # Glucose peaks
         # Peak A
-        Glucose_raw_peaks_G_peaka[78: 359, 0] = 0.011398350868612364 * np.exp(-0.0004081632653061224 * np.arange(-140, 141) ** 2)
+        Glucose_raw_peaks_G_peaka[78:359, 0] = 0.011398350868612364 * np.exp(
+            -0.0004081632653061224 * np.arange(-140, 141) ** 2
+        )
         # Peak B
-        Glucose_raw_peaks_G_peakb[598: 679, 0] = 0.009277727451196111 * np.exp(-0.005 * np.arange(-40, 41) ** 2)
+        Glucose_raw_peaks_G_peakb[598:679, 0] = 0.009277727451196111 * np.exp(
+            -0.005 * np.arange(-40, 41) ** 2
+        )
         # Peak C
-        Glucose_raw_peaks_G_peakc[852: 1253, 0] = 0.007978845608028654 * np.exp(-0.0002 * np.arange(-200, 201) ** 2)
+        Glucose_raw_peaks_G_peakc[852:1253, 0] = 0.007978845608028654 * np.exp(
+            -0.0002 * np.arange(-200, 201) ** 2
+        )
         # PAA  peaks
         # Peak A
-        PAA_raw_peaks_G_peaka[298: 539, 0] = 0.01329807601338109 * np.exp(-0.0005555555555555556 * np.arange(-120, 121) ** 2)
+        PAA_raw_peaks_G_peaka[298:539, 0] = 0.01329807601338109 * np.exp(
+            -0.0005555555555555556 * np.arange(-120, 121) ** 2
+        )
         # Peak B
-        PAA_raw_peaks_G_peakb[808: 869, 0] = 0.01237030326826148 * np.exp(-0.008888888888888889 * np.arange(-30, 31) ** 2)
+        PAA_raw_peaks_G_peakb[808:869, 0] = 0.01237030326826148 * np.exp(
+            -0.008888888888888889 * np.arange(-30, 31) ** 2
+        )
         # Adding in  Peak aPen G Peak
-        Product_raw_peaka[679: 920, 0] = 0.02659615202676218 * np.exp(-0.0022222222222222222 * np.arange(-120, 121) ** 2)
+        Product_raw_peaka[679:920, 0] = 0.02659615202676218 * np.exp(
+            -0.0022222222222222222 * np.arange(-120, 121) ** 2
+        )
         # Adding in  Peak b for Pen G Peak
-        Product_raw_peakb[299: 2100, 0] = 0.02659615202676218 * np.exp(-0.0022222222222222222 * np.arange(-900, 901) ** 2)
+        Product_raw_peakb[299:2100, 0] = 0.02659615202676218 * np.exp(
+            -0.0022222222222222222 * np.arange(-900, 901) ** 2
+        )
 
-        total_peaks_G = Glucose_raw_peaks_G_peaka + Glucose_raw_peaks_G_peakb + Glucose_raw_peaks_G_peakc
+        total_peaks_G = (
+            Glucose_raw_peaks_G_peaka
+            + Glucose_raw_peaks_G_peakb
+            + Glucose_raw_peaks_G_peakc
+        )
         total_peaks_PAA = PAA_raw_peaks_G_peaka + PAA_raw_peaks_G_peakb
         total_peaks_P = Product_raw_peakb + Product_raw_peaka
         K_G = 0.005
@@ -762,11 +976,15 @@ class PenSimEnv:
         Substrate_raman = x.S.y[k - 1]
         PAA_raman = x.PAA.y[k - 1]
 
-        term1 = total_peaks_G * Gluc_increase * Substrate_raman / (K_G + Substrate_raman)
+        term1 = (
+            total_peaks_G * Gluc_increase * Substrate_raman / (K_G + Substrate_raman)
+        )
         term2 = total_peaks_PAA * PAA_increase * PAA_raman
         term3 = total_peaks_P * Prod_increase * x.P.y[k - 1]
 
-        x.Raman_Spec.Intensity[k - 1, :] = np.squeeze(New_Spectra_noise + term1 + term2 + term3).tolist()
+        x.Raman_Spec.Intensity[k - 1, :] = np.squeeze(
+            New_Spectra_noise + term1 + term2 + term3
+        ).tolist()
 
         return x
 
@@ -784,17 +1002,25 @@ class PenSimEnv:
         while not done:
             k_timestep += 1
             # Get action from recipe agent based on time
-            values_dict = self.recipe_combo.get_values_dict_at(time=k_timestep * STEP_IN_MINUTES / MINUTES_PER_HOUR)
-            Fs, Foil, Fg, pressure, discharge, Fw, Fpaa = values_dict['Fs'], values_dict['Foil'], values_dict['Fg'], \
-                                                          values_dict['pressure'], values_dict['discharge'], \
-                                                          values_dict['Fw'],  values_dict['Fpaa']
+            values_dict = self.recipe_combo.get_values_dict_at(
+                time=k_timestep * STEP_IN_MINUTES / MINUTES_PER_HOUR
+            )
+            Fs, Foil, Fg, pressure, discharge, Fw, Fpaa = (
+                values_dict["Fs"],
+                values_dict["Foil"],
+                values_dict["Fg"],
+                values_dict["pressure"],
+                values_dict["discharge"],
+                values_dict["Fw"],
+                values_dict["Fpaa"],
+            )
 
             # Run and get the reward
             # observation is a class which contains all the variables, e.g. observation.Fs.y[k], observation.Fs.t[k]
             # are the Fs value and corresponding time at k
-            observation, batch_data, reward, done = self.step(k_timestep,
-                                                              batch_data,
-                                                              Fs, Foil, Fg, pressure, discharge, Fw, Fpaa)
+            observation, batch_data, reward, done = self.step(
+                k_timestep, batch_data, Fs, Foil, Fg, pressure, discharge, Fw, Fpaa
+            )
             batch_yield += reward
 
         return get_dataframe(batch_data, include_raman), batch_yield
