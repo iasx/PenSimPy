@@ -3,7 +3,7 @@ name = "pensimpy"
 version = "0.1.0"
 description = "Fork of PenSimPy"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
     "tqdm>=4.67.1",
     "numpy>=2.3.5",
