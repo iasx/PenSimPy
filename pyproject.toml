@@ -13,6 +13,14 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = [
-    "ipykernel>=7.1.0",
-]
+dev = ["ipykernel>=7.1.0"]
+
+[build-system]
+requires = ["uv_build>=0.9.18,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "pensimpy"
+module-root = ""
+include = ["pensimpy/**"]
+exclude = ["examples/**"]
