@@ -113,7 +113,7 @@ def denormalize_spaces(space_normalized, max_space=None, min_space=None):
 
 
 class PenSimEnvGym(PenSimEnv, Env):
-    def __init__(self, recipe_combo, fast=True, state_dim=9, action_dim=6, normalize=True):
+    def __init__(self, recipe_combo, fast=False, state_dim=9, action_dim=6, normalize=True):
         super(PenSimEnvGym, self).__init__(recipe_combo, fast=fast)
         self.state_dim = state_dim
         self.action_dim = action_dim
