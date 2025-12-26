@@ -135,7 +135,7 @@ class PenSimEnvGym(PenSimEnv, Env):
         if self.normalize:
             observation, _, _ = normalize_spaces(observation, self.max_observations, self.min_observations)
 
-        return observation
+        return observation, {}
 
     def step(self, action):
         """
