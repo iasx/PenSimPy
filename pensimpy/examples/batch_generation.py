@@ -1,7 +1,7 @@
-from examples.recipe import Recipe, RecipeCombo
-from peni_env_setup import PenSimEnv
-from data.profiles import FS, FOIL, FG, PRES, DISCHARGE, WATER, PAA
-from data.profiles import (
+from pensimpy.examples.recipe import Recipe, RecipeCombo
+from pensimpy.peni_env_setup import PenSimEnv
+from pensimpy.data.profiles import FS, FOIL, FG, PRES, DISCHARGE, WATER, PAA
+from pensimpy.data.profiles import (
     FS_DEFAULT_PROFILE,
     FOIL_DEFAULT_PROFILE,
     FG_DEFAULT_PROFILE,

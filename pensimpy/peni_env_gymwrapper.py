@@ -7,12 +7,9 @@ import random
 import numpy as np
 from gymnasium import spaces, Env
 
-from hilo.core.recipe import Recipe, FillingMethod
-from hilo.core.recipe_combo import RecipeCombo
-
-from peni_env_setup import PenSimEnv
-from data.profiles import FS, FOIL, FG, PRES, DISCHARGE, WATER, PAA
-from data.profiles import (
+from pensimpy.peni_env_setup import PenSimEnv
+from pensimpy.data.profiles import FS, FOIL, FG, PRES, DISCHARGE, WATER, PAA
+from pensimpy.data.profiles import (
     FS_DEFAULT_PROFILE,
     FOIL_DEFAULT_PROFILE,
     FG_DEFAULT_PROFILE,
@@ -21,7 +18,7 @@ from data.profiles import (
     WATER_DEFAULT_PROFILE,
     PAA_DEFAULT_PROFILE,
 )
-from constants import (
+from pensimpy.constants import (
     MINUTES_PER_HOUR,
     STEP_IN_MINUTES,
     NUM_STEPS,

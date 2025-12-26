@@ -3,11 +3,11 @@ import random
 import numpy as np
 from tqdm import tqdm
 
-from peni_env_setup import PenSimEnv
-from examples.recipe import Recipe, RecipeCombo
-from constants import STEP_IN_MINUTES, NUM_STEPS
-from data.profiles import FS, FOIL, FG, PRES, DISCHARGE, WATER, PAA
-from data.profiles import (
+from pensimpy.peni_env_setup import PenSimEnv
+from pensimpy.examples.recipe import Recipe, RecipeCombo
+from pensimpy.constants import STEP_IN_MINUTES, NUM_STEPS
+from pensimpy.data.profiles import FS, FOIL, FG, PRES, DISCHARGE, WATER, PAA
+from pensimpy.data.profiles import (
     FS_DEFAULT_PROFILE,
     FOIL_DEFAULT_PROFILE,
     FG_DEFAULT_PROFILE,

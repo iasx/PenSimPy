@@ -3,11 +3,11 @@ import numpy as np
 from scipy.integrate import odeint
 from scipy.interpolate import interp1d
 
-from data.ctrl_flags import CtrlFlags
-from data.batch_data import X0, Xinterp, U, X
-from ode.indpensim_ode_py import indpensim_ode_py
-from utils import pid_controller, smooth, get_dataframe, get_observation_data
-from constants import (
+from pensimpy.data.ctrl_flags import CtrlFlags
+from pensimpy.data.batch_data import X0, Xinterp, U, X
+from pensimpy.ode.indpensim_ode_py import indpensim_ode_py
+from pensimpy.utils import pid_controller, smooth, get_dataframe, get_observation_data
+from pensimpy.constants import (
     RAMAN_SPECTRA,
     RAMAN_WAVENUMBER,
     STEP_IN_MINUTES,
